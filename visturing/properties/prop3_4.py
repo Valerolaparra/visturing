@@ -1,7 +1,12 @@
 import os
 
+import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
+
+def load_data(root_path: str):
+    freqs = np.load(os.path.join(root_path, "freq.npy"))
+    return freqs
 
 def load_ground_truth(root_path: str = "../../ground_truth_decalogo", # Path to the root containing all the ground truth files
                       ): # Tuple (x, y, red-green, yellow-blue)

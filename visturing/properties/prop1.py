@@ -1,7 +1,11 @@
 import os
+from glob import glob
 
+import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
+from natsort import natsorted
+import cv2
 
 def load_ground_truth(root_path: str = "../../ground_truth_decalogo", # Path to the root containing all the ground truth files
                       ): # Tuple (x, achromatic, red-green, yellow-blue)
@@ -40,3 +44,22 @@ def plot_ground_truth(x,
     axes[1].set_xlabel(r"Wavelength ($\lambda$)")
 
     return fig, axes
+
+def load_data(root_path: str,
+              ): # Tuple (imgs, reference_image)
+    ref_path = os.path.join(root_path, "im_ref.png")
+    lambdas = np.load(os.path.join(root_path, "lambdas.npy"))
+
+    imgs_path = [p for p in glob(os.path.join(root_path, "*png")) if "ref" not in p]
+    imgs_path = list(natsorted(imgs_path))
+
+    def load_img(path):
+        img = cv2.imread(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
+
+    ref_img = load_img(ref_path)
+    imgs = np.array([load_img(p) for p in imgs_path])
+    lambdas = np.linspace(lambdas.min(), lambdas.max(), num=len(imgs))
+
+    return imgs, ref_img, lambdas

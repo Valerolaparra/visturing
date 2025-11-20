@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 
@@ -18,6 +19,12 @@ def load_ground_truth(root_path: str = "../../ground_truth_decalogo", # Path to 
     x, y_yb = data[0], data[1:]
     
     return x, y, y_rg, y_yb
+
+def load_data(root_path):
+    c_a = np.load(os.path.join(root_path, "contrast_a.npy"))
+    c_rg = np.load(os.path.join(root_path, "contrast_rg.npy"))
+    c_yb = np.load(os.path.join(root_path, "contrast_yb.npy"))
+    return c_a, c_rg, c_yb
 
 def plot_ground_truth(x,
                       y,

@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 
@@ -18,7 +19,15 @@ def load_ground_truth(root_path: str = "../../ground_truth_decalogo", # Path to 
     data = sio.loadmat(os.path.join(root_path, "resp_YB.mat"))
     data = data["resp_YB"]
     _, yb = data
+    
     return x, y, x_c, rg, x_c, yb
+
+def load_data(root_path):
+    x_a = np.load(os.path.join(root_path, "luminancias.npy"))
+    x_rg = np.load(os.path.join(root_path, "x_rg.npy"))
+    x_yb = np.load(os.path.join(root_path, "x_yb.npy"))
+    return x_a, x_rg, x_yb
+
 
 def plot_ground_truth(x,y,
                       x_c, rg,
