@@ -72,9 +72,7 @@ def evaluate(calculate_diffs,
     
     imgs, ref_img, lambdas = load_data(data_path)
 
-    diffs = []
-    for img in imgs:
-        diffs.append(calculate_diffs(img, ref_img))
+    diffs = calculate_diffs(imgs, ref_img[None,...])
 
     x, a, _, _ = load_ground_truth(gt_path)
     a_interp = np.interp(lambdas, x, a)
