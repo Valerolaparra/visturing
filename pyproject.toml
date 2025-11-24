@@ -28,6 +28,11 @@ classifiers = [
 #     "h5py",
 # ]
 #
+
+dependencies = [
+  "natsorted",
+]
+
 [tool.setuptools]
 packages = ["visturing"]
 
