@@ -1,7 +1,15 @@
 import os
+import re
+from glob import glob
+from collections import defaultdict
 
+
+import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+from visturing.ranking import prepare_data, calculate_correlations_with_ground_truth, calculate_correlations, prepare_and_correlate, prepare_and_correlate_order, calculate_spearman, calculate_pearson_stack
 
 def load_ground_truth(root_path: str = "../../ground_truth_decalogo", # Path to the root containing all the ground truth files
                       return_freqs: bool = False, # Return the frequencies corresponding to each response
@@ -32,3 +40,67 @@ def plot_ground_truth(x,
         ax.set_xlabel("Contrast")
     axes[0].set_ylabel("Visibility")
     return fig, axes
+
+def evaluate(calculate_diffs,
+             data_path,
+             gt_path,
+             ):
+    
+    xs = np.load(os.path.join(data_path, "contrasts.npy"))
+    data_high = {re.findall("high_(\w+)\.", p)[0]: np.load(p) for p in glob(os.path.join(data_path, "*")) if "high" in p}
+    data_low = {re.findall("low_(\w+)\.", p)[0]: np.load(p) for p in glob(os.path.join(data_path, "*")) if "_low_" in p}
+
+
+    c_mask = ['No mask', 'C_mask = 0.075', 'C_mask = 0.150', 'C_mask = 0.225', 'C_mask = 0.300']
+
+    diffs_high = defaultdict(dict)
+    for name, chroma in data_high.items():
+        for f, dat in zip(c_mask, chroma):
+            diffs_ = calculate_diffs(dat, dat[0:1])
+            diffs_high[name][f] = diffs_
+
+    diffs_low = defaultdict(dict)
+    for name, chroma in data_low.items():
+        for f, dat in zip(c_mask, chroma):
+            diffs_ = calculate_diffs(dat, dat[0:1])
+            diffs_low[name][f] = diffs_
+
+
+    x_gt, y_low_gt, y_high_gt  = load_ground_truth(gt_path)
+
+
+    diffs_low_a_s = np.array([a for a in diffs_low["achrom"].values()])
+    diffs_low_rg_s = np.array([a for a in diffs_low["red_green"].values()])
+    diffs_low_yb_s = np.array([a for a in diffs_low["yellow_blue"].values()])
+
+
+    bs = []
+    for b in diffs_low_a_s:
+        a, b, c, d = prepare_data(xs, b, x_gt, y_low_gt)
+        bs.append(b)
+    b_low = np.array(bs)
+
+    order_corr = {}
+    order_corr["low"] = calculate_spearman(b_low, ideal_ordering=[0,1,2,3,4])
+
+
+    diffs_high_a_s = np.array([a for a in diffs_high["achrom"].values()])
+
+    bs = []
+    for b in diffs_high_a_s:
+        a, b, c, d = prepare_data(xs, b, x_gt, y_high_gt)
+        bs.append(b)
+    b_high = np.array(bs)
+
+    order_corr["high"] = calculate_spearman(b_high, ideal_ordering=[0,1,2,3,4])
+
+    pearson = stats.pearsonr(
+        np.concatenate([
+            b_low[0], b_high[0]
+        ]),
+        np.concatenate([
+            y_low_gt, y_high_gt
+        ])
+    )
+
+    return order_corr, pearson
