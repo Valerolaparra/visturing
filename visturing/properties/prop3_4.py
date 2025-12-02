@@ -101,7 +101,7 @@ def download_data(data_path, # Path to download the data
                   ):
     # if not os.path.exists(data_path):
     #     os.makedirs(data_path)
-    data_url = "https://zenodo.org/records/17700252/files/Experiment_4_5.zip"
+    data_url = "https://zenodo.org/records/17700252/files/Experiment_3_4.zip"
     path = wget.download(data_url)
     with ZipFile(path) as zipObj:
         zipObj.extractall(data_path)
