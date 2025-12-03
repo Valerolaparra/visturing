@@ -18,7 +18,7 @@ def download_ground_truth(data_path, # Path to download the data
     with ZipFile(path) as zipObj:
         zipObj.extractall(data_path)
     os.remove(path)
-    return os.path.join(data_path, "ground_truth")
+    return os.path.join(data_path)
 
 def evaluate_all(calculate_diffs,
                  data_path, # Path to the root directory
