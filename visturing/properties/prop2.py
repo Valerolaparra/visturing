@@ -118,7 +118,7 @@ def evaluate(calculate_diffs,
             d_rg.ravel(), d_yb.ravel(),
         ])
     )[0]
-    correlations = {"pearson_achrom": corr_achrom, "pearson_chrom": corr_chroma, "spearman": spearman_correlations}
+    correlations = {"pearson_achrom": corr_achrom, "pearson_chrom": corr_chroma, "kendall_corr": spearman_correlations}
 
     return {"diffs": diffs, "correlations": correlations}
 

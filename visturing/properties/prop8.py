@@ -108,7 +108,7 @@ def evaluate(calculate_diffs,
         ])
     )
 
-    return {"order_corr": order_corr, "pearson": pearson}
+    return {"kendall_corr": order_corr, "pearson_corr": pearson}
 
 def download_data(data_path, # Path to download the data
                   ):

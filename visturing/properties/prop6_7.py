@@ -128,7 +128,7 @@ def evaluate(calculate_diffs,
         b_cat[~nan_mask], d_cat[~nan_mask]
     )
 
-    return {"order_corr": order_corr, "pearson": pearson}
+    return {"kendall_corr": order_corr, "pearson_corr": pearson}
 
 def download_data(data_path, # Path to download the data
                   ):

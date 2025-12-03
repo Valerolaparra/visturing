@@ -83,7 +83,7 @@ def evaluate(calculate_diffs,
     a_interp = np.interp(lambdas, x, a)
     corr, _ = pearsonr(diffs, a_interp)
 
-    return {"lambdas": lambdas, "diffs": diffs, "corr": corr}
+    return {"lambdas": lambdas, "diffs": diffs, "pearson_corr": corr}
 
 def download_data(data_path, # Path to download the data
                   ):
